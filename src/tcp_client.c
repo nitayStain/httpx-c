@@ -22,23 +22,21 @@ tcp_client* create_tcp_client(const char* server_ip, const uint16_t port)
 #endif
 
     tcp_client* self = (tcp_client*) malloc(sizeof(tcp_client*));
-    if(self == NULL)
-        return NULL;
+    if (self == NULL)
+        goto error;
 
     self->sock = socket(AF_INET, SOCK_STREAM, 0);
-    if(self->sock == INVALID_SOCKET) 
-    {
-        free(self);
-        return NULL;
-    }
+    if(self->sock == INVALID_SOCKET)
+        goto error;
 
     if(set_tcp_address(self, server_ip, port) != TCP_OK)
-    {
-        free(self);
-        return NULL;
-    }
-    
+        goto error;
+
     return self;
+
+error:
+    if (self) free(self);
+    return NULL;
 }
 
 tcp_status connect_tcp_client(tcp_client* self)
