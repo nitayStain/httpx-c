@@ -22,23 +22,21 @@ tcp_client* create_tcp_client(const char* server_ip, const uint16_t port)
 #endif
 
     tcp_client* self = (tcp_client*) malloc(sizeof(tcp_client*));
-    if(self == NULL)
-        return NULL;
+    if (self == NULL)
+        goto error;
 
     self->sock = socket(AF_INET, SOCK_STREAM, 0);
-    if(self->sock == INVALID_SOCKET) 
-    {
-        free(self);
-        return NULL;
-    }
+    if(self->sock == INVALID_SOCKET)
+        goto error;
 
     if(set_tcp_address(self, server_ip, port) != TCP_OK)
-    {
-        free(self);
-        return NULL;
-    }
-    
+        goto error;
+
     return self;
+
+error:
+    if (self) free(self);
+    return NULL;
 }
 
 tcp_status connect_tcp_client(tcp_client* self)
@@ -84,7 +82,7 @@ tcp_status close_tcp_client(tcp_client* self)
 
 tcp_status set_tcp_address(tcp_client* self, const char* server_ip, const uint16_t port)
 {
-    memset(&self->server_addr, 0, sizeof(&self->server_addr));
+    memset(&self->server_addr, 0, sizeof(self->server_addr));
     self->server_addr.sin_family = AF_INET;
     self->server_addr.sin_port = htons(port);
 
