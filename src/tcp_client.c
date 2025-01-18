@@ -82,7 +82,7 @@ tcp_status close_tcp_client(tcp_client* self)
 
 tcp_status set_tcp_address(tcp_client* self, const char* server_ip, const uint16_t port)
 {
-    memset(&self->server_addr, 0, sizeof(&self->server_addr));
+    memset(&self->server_addr, 0, sizeof(self->server_addr));
     self->server_addr.sin_family = AF_INET;
     self->server_addr.sin_port = htons(port);
 
